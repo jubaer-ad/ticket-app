@@ -12,13 +12,14 @@ const ticketSchema = new Schema(
         priority: Number,
         progress: Number,
         status: String,
-        active: Boolean
-    },
-    {
-        timeseries: true
+        active: Boolean,
+    }, {
+        timestamps: true,
     }
 )
 
 const Ticket = mongoose.models.Ticket || mongoose.model("Ticket", ticketSchema)
+
+
 export default Ticket
 

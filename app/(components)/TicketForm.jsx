@@ -1,10 +1,10 @@
 "use client";
 
-import { userRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 const TicketForm = () => {
-  const router = userRouter()
+  const router = useRouter();
   const handleChange = (e) => {
     const value = e.target.value;
     const name = e.target.name;
@@ -17,9 +17,12 @@ const TicketForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await fetch("api/Tickets", {
+    var formDataStr = JSON.stringify({formData});
+    console.log(formDataStr);
+    
+    const res = await fetch("/api/Tickets", {
       method: "POST",
-      body: JSON.stringify({formdata}),
+      body: formDataStr,
       "content-type": "application/json"
     })
     
@@ -36,10 +39,10 @@ const TicketForm = () => {
     priority: 1,
     progress: 0,
     status: "not started",
-    category: "Hard Problem",
+    category: "Hardware Issue",
   };
 
-  const [formdata, setFormData] = useState(startingTicketData);
+  const [formData, setFormData] = useState(startingTicketData);
   return (
     <div className="flex justify-center">
       <form
@@ -55,7 +58,7 @@ const TicketForm = () => {
           type="text"
           onChange={handleChange}
           required={true}
-          value={formdata.title}
+          value={formData.title}
         />
         <label>Description</label>
         <textarea
@@ -63,13 +66,13 @@ const TicketForm = () => {
           name="description"
           onChange={handleChange}
           required={true}
-          value={formdata.description}
+          value={formData.description}
           rows="5"
         />
         <label>Category</label>
         <select
           name="category"
-          value={formdata.category}
+          value={formData.category}
           onChange={handleChange}
         >
           <option value="Hardware Issue">Hardware Issue</option>
@@ -85,7 +88,7 @@ const TicketForm = () => {
             type="radio"
             onChange={handleChange}
             value={1}
-            checked={formdata.priority == 1}
+            checked={formData.priority == 1}
           />
           <label>1</label>
           <input
@@ -94,7 +97,7 @@ const TicketForm = () => {
             type="radio"
             onChange={handleChange}
             value={2}
-            checked={formdata.priority == 2}
+            checked={formData.priority == 2}
           />
           <label>2</label>
           <input
@@ -103,7 +106,7 @@ const TicketForm = () => {
             type="radio"
             onChange={handleChange}
             value={3}
-            checked={formdata.priority == 3}
+            checked={formData.priority == 3}
           />
           <label>3</label>
           <input
@@ -112,7 +115,7 @@ const TicketForm = () => {
             type="radio"
             onChange={handleChange}
             value={4}
-            checked={formdata.priority == 4}
+            checked={formData.priority == 4}
           />
           <label>4</label>
           <input
@@ -121,7 +124,7 @@ const TicketForm = () => {
             type="radio"
             onChange={handleChange}
             value={5}
-            checked={formdata.priority == 5}
+            checked={formData.priority == 5}
           />
           <label>5</label>
         </div>
@@ -130,11 +133,11 @@ const TicketForm = () => {
           type="range"
           id="progress"
           name="progress"
-          value={formdata.progress}
+          value={formData.progress}
           onChange={handleChange}
         />
         <label>Status</label>
-        <select name="status" value={formdata.status} onChange={handleChange}>
+        <select name="status" value={formData.status} onChange={handleChange}>
           <option value="not started">Not Started</option>
           <option value="started">Started</option>
           <option value="done">Done</option>

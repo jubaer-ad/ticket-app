@@ -3,7 +3,11 @@
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
-const TicketForm = () => {
+const TicketForm = ({ticket}) => {
+  const ADDMODE = ticket._id === "new";
+  
+  console.log("ADDMODE", ADDMODE);
+  
   const router = useRouter();
   const handleChange = (e) => {
     const value = e.target.value;
@@ -18,16 +22,29 @@ const TicketForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     var formDataStr = JSON.stringify({formData});
-    console.log(formDataStr);
+    console.log("formDataStr",formDataStr);
     
-    const res = await fetch("/api/Tickets", {
-      method: "POST",
-      body: formDataStr,
-      "content-type": "application/json"
-    })
-    
-    if (!res.ok) {
-      throw new Error("Failed to create the ticket")
+    if(ADDMODE) {
+      const rsp = await fetch("/api/Tickets", {
+        method: "POST",
+        body: formDataStr,
+        "content-type": "application/json"
+      })
+      
+      if (!rsp.ok) {
+        throw new Error("Failed to create the ticket")
+      }
+    }
+    else {
+      const rsp = await fetch(`/api/Tickets/${ticket._id}`, {
+        method: "PUT",
+        body: formDataStr,
+        "content-type": "application/json"
+      })
+      
+      if (!rsp.ok) {
+        throw new Error("Failed to edit the ticket")
+      }
     }
 
     router.refresh()
@@ -41,6 +58,14 @@ const TicketForm = () => {
     status: "not started",
     category: "Hardware Issue",
   };
+  if(!ADDMODE) {
+    startingTicketData.title = ticket.title;
+    startingTicketData.description = ticket.description;
+    startingTicketData.priority = ticket.priority;
+    startingTicketData.progress = ticket.progress;
+    startingTicketData.status = ticket.status;
+    startingTicketData.category = ticket.category;
+  }
 
   const [formData, setFormData] = useState(startingTicketData);
   return (
@@ -50,7 +75,7 @@ const TicketForm = () => {
         method="post"
         onSubmit={handleSubmit}
       >
-        <h3>Create Ticket</h3>
+        <h3>{ADDMODE ? "Create Ticket" : "Edit Ticket"}</h3>
         <label>Title</label>
         <input
           id="title"
@@ -142,7 +167,7 @@ const TicketForm = () => {
           <option value="started">Started</option>
           <option value="done">Done</option>
         </select>
-        <input type="submit" className="btn" value={"Create Ticket"} />
+        <input type="submit" className="btn" value={ADDMODE ? "Create Ticket" : "Done"} />
       </form>
     </div>
   );

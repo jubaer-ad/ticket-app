@@ -7,7 +7,7 @@ import {useRouter} from "next/navigation"
 const DeleteBlock = ({id}) => {
   const router = useRouter()
   const handleOnClick = async () => {
-    const rsp = await fetch(`http://localhost:3000/api/Tickets/${id}`, {
+    const rsp = await fetch(`/api/Tickets/${id}`, {
       method: "DELETE"
     })
     if (rsp.ok) {

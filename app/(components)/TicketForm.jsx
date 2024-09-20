@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+const numericFields = ["priority", "progress"]
 
 const TicketForm = ({ticket}) => {
   const ADDMODE = ticket._id === "new";
@@ -10,12 +11,11 @@ const TicketForm = ({ticket}) => {
   
   const router = useRouter();
   const handleChange = (e) => {
-    const value = e.target.value;
-    const name = e.target.name;
-
+    const {name, value, type} = e.target;
+    const isNumber = numericFields.includes(name)
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: isNumber ? Number(value): value,
     }));
   };
 
@@ -36,7 +36,7 @@ const TicketForm = ({ticket}) => {
       }
     }
     else {
-      const rsp = await fetch(`/api/Tickets/${ticket._id}`, {
+      const rsp = await fetch(`/api/Tickets/${ticket.id}`, {
         method: "PUT",
         body: formDataStr,
         "content-type": "application/json"
